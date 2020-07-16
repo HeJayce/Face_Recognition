@@ -6,88 +6,110 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>768</width>
-    <height>523</height>
+    <width>1225</width>
+    <height>590</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>MainWindow</string>
   </property>
   <widget class="QWidget" name="centralwidget">
-   <layout class="QHBoxLayout" name="horizontalLayout">
+   <property name="minimumSize">
+    <size>
+     <width>1066</width>
+     <height>0</height>
+    </size>
+   </property>
+   <layout class="QHBoxLayout" name="horizontalLayout_2">
     <item>
-     <layout class="QVBoxLayout" name="verticalLayout" stretch="2,2,1,3,1,3">
+     <layout class="QHBoxLayout" name="horizontalLayout" stretch="1,2,1">
       <item>
-       <widget class="QPushButton" name="pushButton_2">
-        <property name="text">
-         <string>启动签到</string>
-        </property>
-       </widget>
+       <layout class="QVBoxLayout" name="verticalLayout" stretch="2,2,1,3,1,3">
+        <item>
+         <widget class="QPushButton" name="pushButton_2">
+          <property name="text">
+           <string>启动签到</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QPushButton" name="pushButton">
+          <property name="text">
+           <string>关闭签到</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QLabel" name="label">
+          <property name="text">
+           <string>已签人数</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QLCDNumber" name="lcdNumber"/>
+        </item>
+        <item>
+         <widget class="QLabel" name="label_2">
+          <property name="text">
+           <string>未签人数</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QLCDNumber" name="lcdNumber_2"/>
+        </item>
+       </layout>
       </item>
       <item>
-       <widget class="QPushButton" name="pushButton">
-        <property name="text">
-         <string>关闭签到</string>
-        </property>
-       </widget>
+       <layout class="QVBoxLayout" name="verticalLayout_2" stretch="0,1">
+        <item>
+         <widget class="QLabel" name="label_3">
+          <property name="text">
+           <string>人脸显示区</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QLabel" name="label_6">
+          <property name="text">
+           <string/>
+          </property>
+         </widget>
+        </item>
+       </layout>
       </item>
       <item>
-       <widget class="QLabel" name="label">
-        <property name="text">
-         <string>已签人数</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QLCDNumber" name="lcdNumber"/>
-      </item>
-      <item>
-       <widget class="QLabel" name="label_2">
-        <property name="text">
-         <string>未签人数</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QLCDNumber" name="lcdNumber_2"/>
-      </item>
-     </layout>
-    </item>
-    <item>
-     <layout class="QVBoxLayout" name="verticalLayout_2">
-      <item>
-       <widget class="QLabel" name="label_3">
-        <property name="text">
-         <string>人脸显示区</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QGraphicsView" name="graphicsView"/>
-      </item>
-     </layout>
-    </item>
-    <item>
-     <layout class="QVBoxLayout" name="verticalLayout_3" stretch="0,2,0,1">
-      <item>
-       <widget class="QLabel" name="label_4">
-        <property name="text">
-         <string>个人信息：</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QTextBrowser" name="textBrowser"/>
-      </item>
-      <item>
-       <widget class="QLabel" name="label_5">
-        <property name="text">
-         <string>识别结果：</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QListView" name="listView"/>
+       <layout class="QVBoxLayout" name="verticalLayout_3" stretch="0,1,0,2">
+        <item>
+         <widget class="QLabel" name="label_5">
+          <property name="text">
+           <string>识别结果：</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QLabel" name="label_7">
+          <property name="text">
+           <string/>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QLabel" name="label_4">
+          <property name="text">
+           <string>个人信息：</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QLabel" name="label_8">
+          <property name="text">
+           <string/>
+          </property>
+         </widget>
+        </item>
+       </layout>
       </item>
      </layout>
     </item>
@@ -98,12 +120,51 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>768</width>
+     <width>1225</width>
      <height>23</height>
     </rect>
    </property>
+   <widget class="QMenu" name="menu">
+    <property name="title">
+     <string>签到</string>
+    </property>
+    <addaction name="actionopen"/>
+    <addaction name="actionclose"/>
+   </widget>
+   <addaction name="menu"/>
   </widget>
-  <widget class="QStatusBar" name="statusbar"/>
+  <widget class="QToolBar" name="toolBar">
+   <property name="windowTitle">
+    <string>toolBar</string>
+   </property>
+   <attribute name="toolBarArea">
+    <enum>LeftToolBarArea</enum>
+   </attribute>
+   <attribute name="toolBarBreak">
+    <bool>false</bool>
+   </attribute>
+  </widget>
+  <widget class="QToolBar" name="toolBar_2">
+   <property name="windowTitle">
+    <string>toolBar_2</string>
+   </property>
+   <attribute name="toolBarArea">
+    <enum>RightToolBarArea</enum>
+   </attribute>
+   <attribute name="toolBarBreak">
+    <bool>false</bool>
+   </attribute>
+  </widget>
+  <action name="actionopen">
+   <property name="text">
+    <string>启动签到</string>
+   </property>
+  </action>
+  <action name="actionclose">
+   <property name="text">
+    <string>停止签到</string>
+   </property>
+  </action>
  </widget>
  <resources/>
  <connections/>
