@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1225</width>
-    <height>590</height>
+    <width>1090</width>
+    <height>411</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -80,7 +80,7 @@
        </layout>
       </item>
       <item>
-       <layout class="QVBoxLayout" name="verticalLayout_3" stretch="0,1,0,2">
+       <layout class="QVBoxLayout" name="verticalLayout_3" stretch="0,1,0,0,0,2">
         <item>
          <widget class="QLabel" name="label_5">
           <property name="text">
@@ -94,6 +94,12 @@
            <string/>
           </property>
          </widget>
+        </item>
+        <item>
+         <widget class="QTimeEdit" name="timeEdit"/>
+        </item>
+        <item>
+         <widget class="QDateEdit" name="dateEdit"/>
         </item>
         <item>
          <widget class="QLabel" name="label_4">
@@ -120,7 +126,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1225</width>
+     <width>1090</width>
      <height>23</height>
     </rect>
    </property>

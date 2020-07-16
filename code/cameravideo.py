@@ -15,6 +15,10 @@ class camera():
         #创建摄像头。对视频或摄像头进行读取操作
         #参数fliename 、device（视频设备号，0默认，123多个）
         self.capture = cv2.VideoCapture(0,cv2.CAP_DSHOW)
+        #isOpened()两数返回一个 布尔值，米为断是否摄像义初始化成小
+
+        if self.capture.isOpened():
+            print("is opened")
         self.currentframe = np.array([])       #创建多维数组
 
 
