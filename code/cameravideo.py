@@ -46,5 +46,5 @@ class camera():
         qpixmap = QPixmap.fromImage(qimg)
         return qpixmap
 
-    def close_camera():
-        
+    def close_camera(self):
+        self.capture.release()

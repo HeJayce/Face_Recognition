@@ -22,7 +22,7 @@ class mywindow(Ui_MainWindow,QMainWindow):
         #connect ：关联（槽函数）
         #self.on_actionopen  关联的函数
         self.actionopen.triggered.connect(self.on_actionopen)
-        self.actionopen.triggered.connect(self.on_actionclose)
+        self.actionclose.triggered.connect(self.on_actionclose)
         date = QDate.currentDate()
         print(date)
         self.dateEdit.setDate(date)
@@ -53,7 +53,8 @@ class mywindow(Ui_MainWindow,QMainWindow):
         self.cameravideo.close_camera()
         #关闭定时器
         self.timeshow.stop()
-        self.label_4.setText("是")
+        self.label_3.setText("人脸显示区")
+        self.label_6.setText(" ")
 
 
 #是作为摄像头，获取数据，显示画面的功能
