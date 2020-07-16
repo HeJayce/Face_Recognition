@@ -16,6 +16,7 @@ class mywindow(Ui_MainWindow,QMainWindow):
     def __init__(self):         #初始化函数
         super(mywindow,self).__init__()
         self.setupUi(self)   #创建界面内容
+
         #信号与槽的关联
         #self.actionopen：指定对象
         #triggered 信号
@@ -32,22 +33,35 @@ class mywindow(Ui_MainWindow,QMainWindow):
         self.timeEdit.setTime(time)
 
 
+    def show_time(self):
+
+        date = QDate.currentDate()
+        print(date)
+        self.dateEdit.setDate(date)
+
+        time = QTime.currentTime()
+        print(time)
+        self.timeEdit.setTime(time)
+
+
 
     '''
     信号槽功能：
-    当某个组件设计了信号槽功能时，当信号产生，会主动调用槽函数，去完成对应的
+    当某个组件设计了信号槽功能时，当信号产生，会主动调用槽函数，去完成对应的操作
     信号：当以某种特定的操作，操作这个组件时，就会主动产生对应操作的信号
     '''
 
     def on_actionopen(self):
         #print("on_actionopen")
         #启动摄像头
+        time = QTime.currentTime()
         self.cameravideo = camera() 
         #启动定时器，进行定时，每隔多久进行一次获取摄像头数据进行显示
         self.timeshow = QTimer(self)
         self.timeshow.start(10)
         #50ms  定时器启动，每50ms就会产生一个信号timeout
         self.timeshow.timeout.connect(self.show_cameradata)
+        self.timeshow.timeout.connect(self.show_time)
 
     def on_actionclose(self):
         self.cameravideo.close_camera()
@@ -55,7 +69,7 @@ class mywindow(Ui_MainWindow,QMainWindow):
         self.timeshow.stop()
         self.label_3.setText("人脸显示区")
         self.label_6.setText(" ")
-
+    
 
 #是作为摄像头，获取数据，显示画面的功能
 #只要能够不断重复调用这个两数，不断的从摄像头获收数据进行显示
