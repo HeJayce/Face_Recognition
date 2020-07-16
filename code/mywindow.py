@@ -50,9 +50,10 @@ class mywindow(Ui_MainWindow,QMainWindow):
         self.timeshow.timeout.connect(self.show_cameradata)
 
     def on_actionclose(self):
-        print("on_actionclose")
-
-
+        self.cameravideo.close_camera()
+        #关闭定时器
+        self.timeshow.stop()
+        self.label_4.setText("是")
 
 
 #是作为摄像头，获取数据，显示画面的功能

@@ -45,3 +45,6 @@ class camera():
         qimg = QImage(self.currentframe,width,height,QImage.Format_RGB888)
         qpixmap = QPixmap.fromImage(qimg)
         return qpixmap
+
+    def close_camera():
+        
