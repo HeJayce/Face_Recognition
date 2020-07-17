@@ -1,8 +1,10 @@
+# encoding:utf-8
 from Ui_Mainwindows import Ui_MainWindow
 from PyQt5.QtWidgets import QMainWindow,QApplication
 import sys
 from PyQt5.QtCore import QTimer,QDateTime,QDate,QTime
 from cameravideo import camera
+import requests
 '''
 子类，维承UI_MainWindow与QMainWindow
 Ui_ MainWindow:
@@ -26,24 +28,15 @@ class mywindow(Ui_MainWindow,QMainWindow):
         self.actionopen.triggered.connect(self.on_actionopen)
         self.actionclose.triggered.connect(self.on_actionclose)
         self.datetime.timeout.connect(self.date_time)
-        # date = QDate.currentDate()
-        # print(date)
-        # self.dateEdit.setDate(date)
-
-        # time = QTime.currentTime()
-        # print(time)
-        # self.timeEdit.setTime(time)
-
+        self.pushButton_2.clicked.connect(self.get_accesstoken)
 
     def date_time(self):
 
         date = QDate.currentDate()
-        print(date)
         self.dateEdit.setDate(date)
         self.label_9.setText(date.toString())
 
         time = QTime.currentTime()
-        print(time)
         self.timeEdit.setTime(time)
         self.label_10.setText(time.toString())
         
@@ -62,7 +55,7 @@ class mywindow(Ui_MainWindow,QMainWindow):
         self.cameravideo = camera() 
         #启动定时器，进行定时，每隔多久进行一次获取摄像头数据进行显示
         self.timeshow = QTimer(self)
-        self.timeshow.start(10)
+        self.timeshow.start(500)
         #50ms  定时器启动，每50ms就会产生一个信号timeout
         self.timeshow.timeout.connect(self.show_cameradata)
 
@@ -71,8 +64,8 @@ class mywindow(Ui_MainWindow,QMainWindow):
         self.cameravideo.close_camera()
         #关闭定时器
         self.timeshow.stop()
-        self.label_3.setText("人脸显示区")
-        self.label_6.setText(" ")
+
+        self.label_11.setText(" ")
     
 
 #是作为摄像头，获取数据，显示画面的功能
@@ -84,11 +77,23 @@ class mywindow(Ui_MainWindow,QMainWindow):
         #获取摄像头数据，转换数据
         pic = self.cameravideo.camera_to_pic()
         #显示数据，显示画面
-        self.label_6.setPixmap(pic)
+        self.label_11.setPixmap(pic)
 
 
 
+    def get_accesstoken(self):
+        host = 'https://aip.baidubce.com/oauth/2.0/token?grant_type=client_credentials&client_id=gI2zuccf2cAuquXyOf8lWw3i&client_secret=zTBa0v0VUE7VpxfBLzbWXRyal9rI00yy'
 
+        #发送网络请求
+        #使用get函数发送网络清求，参数为网络清求的地址，执行时会产生返回结果，结果就是请求的结果
+
+
+        response = requests.get(host)
+        print(response.json())
+        if response:
+            response = response.json()
+            print(response)
+            
 
 
 
