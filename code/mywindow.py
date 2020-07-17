@@ -86,18 +86,39 @@ class mywindow(Ui_MainWindow,QMainWindow):
 
         #发送网络请求
         #使用get函数发送网络清求，参数为网络清求的地址，执行时会产生返回结果，结果就是请求的结果
-
-
         response = requests.get(host)
-        print(response.json())
         if response:
-            response = response.json()
-            print(response)
+            data = response.json()
+            self.access_token = data.get('access_token')
+            print(data)
             
 
 
+    def get_face():
+        request_url = "https://aip.baidubce.com/rest/2.0/face/v3/detect"
+        #请求参数，是一个字典在字典中存储了，百度AI要识别的图片信息，要识别的属性内容
+        params = {
+            "image":"",  #图片信息字符串
+            "image_type":"BASE64",  #图片信息的格式
+            "face_field":"gender,age"}  #清求识别人脸的属性，各个属性在字符串中用，逗号隔开
+        #访问令牌
+        access_token = self.access_token
+        #把请求地址和访问令牌组成可用的网络请求
+        request_url = request_url + "?access_token=" + access_token
+        #
+        headers = {'content-type': 'application/json'}
+        #
+        response = requests.post(request_url, data=params, headers=headers)
+        if response:
+            print (response.json())
 
 
+
+
+
+
+
+            
 #创建应用程序对象
 app = QApplication(sys.argv)
 #创建窗口

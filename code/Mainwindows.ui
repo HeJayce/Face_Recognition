@@ -92,7 +92,7 @@
         <item>
          <widget class="QPushButton" name="pushButton">
           <property name="text">
-           <string>关闭签到</string>
+           <string>token</string>
           </property>
          </widget>
         </item>

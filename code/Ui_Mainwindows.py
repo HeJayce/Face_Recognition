@@ -138,7 +138,7 @@ class Ui_MainWindow(object):
         self.label_9.setText(_translate("MainWindow", "TextLabel"))
         self.label_10.setText(_translate("MainWindow", "TextLabel"))
         self.pushButton_2.setText(_translate("MainWindow", "Face"))
-        self.pushButton.setText(_translate("MainWindow", "关闭签到"))
+        self.pushButton.setText(_translate("MainWindow", "token"))
         self.label.setText(_translate("MainWindow", "已签人数"))
         self.label_2.setText(_translate("MainWindow", "未签人数"))
         self.label_3.setText(_translate("MainWindow", "人脸显示区"))
