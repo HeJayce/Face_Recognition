@@ -1,10 +1,11 @@
 # encoding:utf-8
 from Ui_Mainwindows import Ui_MainWindow
-from PyQt5.QtWidgets import QMainWindow,QApplication
+from PyQt5.QtWidgets import QMainWindow,QApplication,QFileDialog
 import sys
 from PyQt5.QtCore import QTimer,QDateTime,QDate,QTime
 from cameravideo import camera
 import requests
+import base64
 '''
 子类，维承UI_MainWindow与QMainWindow
 Ui_ MainWindow:
@@ -29,6 +30,7 @@ class mywindow(Ui_MainWindow,QMainWindow):
         self.actionclose.triggered.connect(self.on_actionclose)
         self.datetime.timeout.connect(self.date_time)
         self.pushButton_2.clicked.connect(self.get_accesstoken)
+        self.pushButton.clicked.connect(self.get_face)
 
     def date_time(self):
 
@@ -90,17 +92,23 @@ class mywindow(Ui_MainWindow,QMainWindow):
         if response:
             data = response.json()
             self.access_token = data.get('access_token')
-            print(data)
+
             
 
 
-    def get_face():
+    def get_face(self):
+        path,ret = QFileDialog.getOpenFileName(self,"open picture",".","图片格式(*.jpg)")
+        print(path)
+        #把图片转换为base64编码
+        fp = open(path,'rb')
+        base64_image = base64.b64encode(fp.read())
         request_url = "https://aip.baidubce.com/rest/2.0/face/v3/detect"
         #请求参数，是一个字典在字典中存储了，百度AI要识别的图片信息，要识别的属性内容
         params = {
-            "image":"",  #图片信息字符串
+            "image":base64_image,  #图片信息字符串
             "image_type":"BASE64",  #图片信息的格式
-            "face_field":"gender,age"}  #清求识别人脸的属性，各个属性在字符串中用，逗号隔开
+            "face_field":"gender,age,beauty"
+            }  #清求识别人脸的属性，各个属性在字符串中用，逗号隔开
         #访问令牌
         access_token = self.access_token
         #把请求地址和访问令牌组成可用的网络请求
@@ -110,7 +118,10 @@ class mywindow(Ui_MainWindow,QMainWindow):
         #
         response = requests.post(request_url, data=params, headers=headers)
         if response:
-            print (response.json())
+            data = response.json()
+            if data['error_msg']=='SUCCESS' :
+                #在data字典中健为'result'对应的值才是返回的检测结果
+                print(data['result'])
 
 
 
@@ -118,7 +129,6 @@ class mywindow(Ui_MainWindow,QMainWindow):
 
 
 
-            
 #创建应用程序对象
 app = QApplication(sys.argv)
 #创建窗口

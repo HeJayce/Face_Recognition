@@ -85,14 +85,14 @@
         <item>
          <widget class="QPushButton" name="pushButton_2">
           <property name="text">
-           <string>Face</string>
+           <string>token</string>
           </property>
          </widget>
         </item>
         <item>
          <widget class="QPushButton" name="pushButton">
           <property name="text">
-           <string>token</string>
+           <string>face_post</string>
           </property>
          </widget>
         </item>
