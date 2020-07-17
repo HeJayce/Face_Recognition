@@ -16,7 +16,8 @@ class mywindow(Ui_MainWindow,QMainWindow):
     def __init__(self):         #初始化函数
         super(mywindow,self).__init__()
         self.setupUi(self)   #创建界面内容
-
+        self.datetime = QTimer(self)
+        self.datetime.start(500)
         #信号与槽的关联
         #self.actionopen：指定对象
         #triggered 信号
@@ -24,25 +25,28 @@ class mywindow(Ui_MainWindow,QMainWindow):
         #self.on_actionopen  关联的函数
         self.actionopen.triggered.connect(self.on_actionopen)
         self.actionclose.triggered.connect(self.on_actionclose)
+        self.datetime.timeout.connect(self.date_time)
+        # date = QDate.currentDate()
+        # print(date)
+        # self.dateEdit.setDate(date)
+
+        # time = QTime.currentTime()
+        # print(time)
+        # self.timeEdit.setTime(time)
+
+
+    def date_time(self):
+
         date = QDate.currentDate()
         print(date)
         self.dateEdit.setDate(date)
+        self.label_9.setText(date.toString())
 
         time = QTime.currentTime()
         print(time)
         self.timeEdit.setTime(time)
-
-
-    def show_time(self):
-
-        date = QDate.currentDate()
-        print(date)
-        self.dateEdit.setDate(date)
-
-        time = QTime.currentTime()
-        print(time)
-        self.timeEdit.setTime(time)
-
+        self.label_10.setText(time.toString())
+        
 
 
     '''
@@ -54,14 +58,14 @@ class mywindow(Ui_MainWindow,QMainWindow):
     def on_actionopen(self):
         #print("on_actionopen")
         #启动摄像头
-        time = QTime.currentTime()
+
         self.cameravideo = camera() 
         #启动定时器，进行定时，每隔多久进行一次获取摄像头数据进行显示
         self.timeshow = QTimer(self)
         self.timeshow.start(10)
         #50ms  定时器启动，每50ms就会产生一个信号timeout
         self.timeshow.timeout.connect(self.show_cameradata)
-        self.timeshow.timeout.connect(self.show_time)
+
 
     def on_actionclose(self):
         self.cameravideo.close_camera()
