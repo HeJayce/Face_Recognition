@@ -3,10 +3,13 @@ from Ui_Mainwindows import Ui_MainWindow
 from PyQt5.QtWidgets import QMainWindow,QApplication,QFileDialog
 import sys
 import cv2
-from PyQt5.QtCore import QTimer,QDateTime,QDate,QTime
+from PyQt5.QtCore import QTimer,QDateTime,QDate,QTime,QThread
 from cameravideo import camera
-import requests
+import requests,json
 import base64
+from detect import detect_thread
+
+
 '''
 子类，维承UI_MainWindow与QMainWindow
 Ui_ MainWindow:
@@ -31,6 +34,21 @@ class mywindow(Ui_MainWindow,QMainWindow):
         self.actionopen.triggered.connect(self.on_actionopen)
         self.actionclose.triggered.connect(self.on_actionclose)
         self.datetime.timeout.connect(self.date_time)
+        # self.pushButton.clicked.connect(self.get_face)
+        self.pushButton_2.clicked.connect(self.create_thread)
+
+    #线程完成检测
+    def create_thread(self):
+        self.detectThread = detect_thread(self.access_token)
+        self.detectThread.start()
+
+
+
+
+
+
+
+
 
     def date_time(self):
 
@@ -62,10 +80,16 @@ class mywindow(Ui_MainWindow,QMainWindow):
  
         #50ms  定时器启动，每50ms就会产生一个信号timeout
         self.timeshow.timeout.connect(self.show_cameradata)
+
+        self.create_thread()
+        '''
         #当开启检测启动时，创建定时器，500ms， 用作检测
         self.facedetecttime = QTimer(self)
         self.facedetecttime.start(500)
         self.facedetecttime.timeout.connect(self.get_face)
+        '''
+
+        
 
     def on_actionclose(self):
         self.cameravideo.close_camera()
@@ -106,11 +130,11 @@ class mywindow(Ui_MainWindow,QMainWindow):
         这是打开对话框获取,获取画面
 
         '''
-        # path,ret = QFileDialog.getOpenFileName(self,"open picture",".","图片格式(*.jpg)")
-        # print(path)
-        # #把图片转换为base64编码
-        # fp = open(path,'rb')
-        # base64_image = base64.b64encode(fp.read())
+        path,ret = QFileDialog.getOpenFileName(self,"open picture",".","图片格式(*.jpg)")
+        print(path)
+        #把图片转换为base64编码
+        fp = open(path,'rb')
+        base64_image = base64.b64encode(fp.read())
 
 
         '''
@@ -118,10 +142,10 @@ class mywindow(Ui_MainWindow,QMainWindow):
 
 
         '''
-        camera_data = self.cameravideo.read_camera()
-        #转换图片,设置编码为base64
-        _,enc = cv2.imencode('.jpg',camera_data)
-        base64_image = base64.b64encode(enc.tobytes())
+        # camera_data = self.cameravideo.read_camera()
+        # #转换图片,设置编码为base64
+        # _,enc = cv2.imencode('.jpg',camera_data)
+        # base64_image = base64.b64encode(enc.tobytes())
 
 
 
