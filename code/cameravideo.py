@@ -35,7 +35,7 @@ class camera():
         #调icvtColor完成后才是RGB悠式的画面数据
         self.currentframe = cv2.cvtColor(pic,cv2.COLOR_BGR2RGB)
         #设置宽高
-        #self.currentframe = cv2.cvtColor(self.currentframe,(640,480))
+        # self.currentframe = cv2.cvtColor(self.currentframe,(640,480))
 
         #转换格式（界面能够显示的格式）
         #获取画面的宽度和高度

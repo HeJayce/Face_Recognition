@@ -3,7 +3,7 @@ from Ui_Mainwindows import Ui_MainWindow
 from PyQt5.QtWidgets import QMainWindow,QApplication,QFileDialog
 import sys
 import cv2
-from PyQt5.QtCore import QTimer,QDateTime,QDate,QTime,QThread
+from PyQt5.QtCore import QTimer,QDateTime,QDate,QTime,QThread,pyqtSignal
 from cameravideo import camera
 import requests,json
 import base64
@@ -20,11 +20,13 @@ mywindow:
     完整的窗口类
 '''
 class mywindow(Ui_MainWindow,QMainWindow):
+    detect_data_signal = pyqtSignal(bytes)
+
     def __init__(self):         #初始化函数
         super(mywindow,self).__init__()
         self.setupUi(self)   #创建界面内容
         self.datetime = QTimer(self)
-        self.datetime.start(10)
+        self.datetime.start(500)
         self.get_accesstoken()
         #信号与槽的关联
         #self.actionopen：指定对象
@@ -35,19 +37,13 @@ class mywindow(Ui_MainWindow,QMainWindow):
         self.actionclose.triggered.connect(self.on_actionclose)
         self.datetime.timeout.connect(self.date_time)
         # self.pushButton.clicked.connect(self.get_face)
-        self.pushButton_2.clicked.connect(self.create_thread)
+        # self.pushButton_2.clicked.connect(self.create_thread)
 
     #线程完成检测
     def create_thread(self):
         self.detectThread = detect_thread(self.access_token)
         self.detectThread.start()
-
-
-
-
-
-
-
+        # self.detect_data_signal.connect(self.detectThread.detect_face)
 
 
     def date_time(self):
@@ -82,29 +78,47 @@ class mywindow(Ui_MainWindow,QMainWindow):
         self.timeshow.timeout.connect(self.show_cameradata)
 
         self.create_thread()
-        '''
+        
         #当开启检测启动时，创建定时器，500ms， 用作检测
         self.facedetecttime = QTimer(self)
-        self.facedetecttime.start(500)
-        self.facedetecttime.timeout.connect(self.get_face)
-        '''
+        self.facedetecttime.start(1000)
+        self.facedetecttime.timeout.connect(self.get_cameradata)
+        #关联一个窗口中的信号与创建的线程中的函数
 
+        self.detect_data_signal.connect(self.detectThread.get_base64)
+        self.detectThread.transmit_data.connect(self.get_detectdata)
         
 
     def on_actionclose(self):
         self.cameravideo.close_camera()
         #关闭定时器
         self.timeshow.stop()
-
         self.label_11.setText(" ")
-    
+
+
+    def get_cameradata(self):
+        camera_data = self.cameravideo.read_camera()
+        _,enc = cv2.imencode('.jpg',camera_data)
+        base64_image = base64.b64encode(enc.tobytes())
+        self.detect_data_signal.emit(bytes(base64_image))
+
+
+
+
+
+
+
+
+
+
+
 
 #是作为摄像头，获取数据，显示画面的功能
 #只要能够不断重复调用这个两数，不断的从摄像头获收数据进行显示
 #可以通过信号，信号关联当前函数，只要信号产生，函数就会被调用
 #信号不断产生，可以通过定时器，定时实践达到就会产生信号
 
-    def show_cameradata(self):
+    def show_cameradata(self): 
         #获取摄像头数据，转换数据
         pic = self.cameravideo.camera_to_pic()
         #显示数据，显示画面
@@ -121,6 +135,50 @@ class mywindow(Ui_MainWindow,QMainWindow):
         if response:
             data = response.json()
             self.access_token = data.get('access_token')
+
+
+    def get_detectdata(self,data):
+
+        if data['error_msg']=='SUCCESS' :
+            self.plainTextEdit_2.clear()
+            #在data字典中健为'result'对应的值才是返回的检测结果
+            face_num = data['result']['face_num']
+            if face_num == 0:
+                self.plainTextEdit_2.appendPlainText("当前没有人")
+                return
+            else:
+                self.plainTextEdit_2.appendPlainText("当前有人")
+
+            #人脸信息['result']['face_list'] ，是列表，每个数据就是一个人脸信息，需要取出每个列表
+            #每个人脸信息字典data['result']['face_list'][0~i]
+            for i in range(face_num):
+                data['result']['face_list'][i]
+                
+            age = data['result']['face_list'][i]['age']
+            beauty = data['result']['face_list'][i]['beauty']
+            expression = data['result']['face_list'][i]['expression']['type']
+            glasses = data['result']['face_list'][i]['glasses']['type']
+            face_shape = data['result']['face_list'][i]['face_shape']['type']
+            emotion = data['result']['face_list'][i]['emotion']['type']
+            gender = data['result']['face_list'][i]['gender']['type']
+            mask = data['result']['face_list'][i]['mask']['type']
+            print(face_shape)
+
+
+            self. plainTextEdit_2.appendPlainText(str(i+1)+"学生人脸信息")
+            self. plainTextEdit_2.appendPlainText("年龄:"+ str(age))
+            self. plainTextEdit_2.appendPlainText("颜值分数:"+ str(beauty))
+            self. plainTextEdit_2.appendPlainText("性别:"+ str(gender))
+            self. plainTextEdit_2.appendPlainText("表情:"+ str(expression))
+            self. plainTextEdit_2.appendPlainText("脸型:"+ str(face_shape))
+            self. plainTextEdit_2.appendPlainText("是否带眼镜:"+ str(glasses))
+            self. plainTextEdit_2.appendPlainText("情绪:"+ str(emotion))
+            if mask == 0:
+                mask = "否"
+            else:
+                mask = "是"
+            self. plainTextEdit_2.appendPlainText("是否带口罩:"+ str(mask))
+
 
             
 
