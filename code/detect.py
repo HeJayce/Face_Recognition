@@ -1,4 +1,4 @@
-from PyQt5.QtCore import QThread,QTimer,pyqtSignal
+from PyQt5.QtCore import QThread,QTimer,pyqtSignal,QDir
 import PyQt5.QtCore
 import cv2 
 import base64
@@ -10,6 +10,7 @@ import requests
 #线程进行执行只会执行线程类中的run函数，如果有新的函数需要实现，重新写一个run函数完成
 class detect_thread(QThread):
     transmit_data = pyqtSignal(dict)
+    OK = True
     def __init__(self,token):
         super(detect_thread,self).__init__()
         self.access_token = token
@@ -23,7 +24,7 @@ class detect_thread(QThread):
         # self.timer = QTimer
         # self.timer.start(1000)
         # self.timer.timeout.connect(self.detect_face)
-        while 1:
+        while self.OK:
             if self.condition:
                 self.detect_face(self.base64_image)  
                 self.condition = False

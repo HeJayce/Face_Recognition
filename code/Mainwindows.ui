@@ -79,33 +79,9 @@
      </layout>
     </item>
     <item>
-     <layout class="QHBoxLayout" name="horizontalLayout" stretch="1,2,1">
+     <layout class="QHBoxLayout" name="horizontalLayout" stretch="2,1">
       <item>
-       <layout class="QVBoxLayout" name="verticalLayout" stretch="1,3,1,3">
-        <item>
-         <widget class="QLabel" name="label">
-          <property name="text">
-           <string>已签人数</string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QLCDNumber" name="lcdNumber"/>
-        </item>
-        <item>
-         <widget class="QLabel" name="label_2">
-          <property name="text">
-           <string>未签人数</string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QLCDNumber" name="lcdNumber_2"/>
-        </item>
-       </layout>
-      </item>
-      <item>
-       <layout class="QVBoxLayout" name="verticalLayout_2" stretch="0,1">
+       <layout class="QVBoxLayout" name="verticalLayout_2" stretch="0,0">
         <item>
          <widget class="QLabel" name="label_3">
           <property name="text">
@@ -122,14 +98,14 @@
            </size>
           </property>
           <property name="text">
-           <string>TextLabel</string>
+           <string/>
           </property>
          </widget>
         </item>
        </layout>
       </item>
       <item>
-       <layout class="QVBoxLayout" name="verticalLayout_3" stretch="0,1,0,0,0,0">
+       <layout class="QVBoxLayout" name="verticalLayout_3" stretch="0,0,0,0">
         <item>
          <widget class="QLabel" name="label_5">
           <property name="text">
@@ -138,38 +114,7 @@
          </widget>
         </item>
         <item>
-         <widget class="QLabel" name="label_7">
-          <property name="text">
-           <string/>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QTimeEdit" name="timeEdit">
-          <property name="readOnly">
-           <bool>true</bool>
-          </property>
-          <property name="buttonSymbols">
-           <enum>QAbstractSpinBox::UpDownArrows</enum>
-          </property>
-          <property name="correctionMode">
-           <enum>QAbstractSpinBox::CorrectToPreviousValue</enum>
-          </property>
-          <property name="maximumDate">
-           <date>
-            <year>1998</year>
-            <month>1</month>
-            <day>1</day>
-           </date>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QDateEdit" name="dateEdit">
-          <property name="readOnly">
-           <bool>true</bool>
-          </property>
-         </widget>
+         <widget class="QTextBrowser" name="textBrowser"/>
         </item>
         <item>
          <widget class="QLabel" name="label_4">
@@ -203,7 +148,17 @@
     <addaction name="actionopen"/>
     <addaction name="actionclose"/>
    </widget>
+   <widget class="QMenu" name="menu_2">
+    <property name="title">
+     <string>人脸库管理</string>
+    </property>
+    <addaction name="actionadd"/>
+    <addaction name="actiondel"/>
+    <addaction name="actionadduser"/>
+    <addaction name="actiongetlist"/>
+   </widget>
    <addaction name="menu"/>
+   <addaction name="menu_2"/>
   </widget>
   <widget class="QToolBar" name="toolBar">
    <property name="windowTitle">
@@ -235,6 +190,26 @@
   <action name="actionclose">
    <property name="text">
     <string>停止签到</string>
+   </property>
+  </action>
+  <action name="actionadd">
+   <property name="text">
+    <string>添加用户组</string>
+   </property>
+  </action>
+  <action name="actiondel">
+   <property name="text">
+    <string>delgroup</string>
+   </property>
+  </action>
+  <action name="actionadduser">
+   <property name="text">
+    <string>adduser</string>
+   </property>
+  </action>
+  <action name="actiongetlist">
+   <property name="text">
+    <string>asd</string>
    </property>
   </action>
  </widget>

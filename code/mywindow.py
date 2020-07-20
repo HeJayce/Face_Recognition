@@ -1,14 +1,15 @@
 # encoding:utf-8
 from Ui_Mainwindows import Ui_MainWindow
-from PyQt5.QtWidgets import QMainWindow,QApplication,QFileDialog
+from PyQt5.QtWidgets import QMainWindow,QApplication,QFileDialog,QMessageBox,QInputDialog
 import sys
 import cv2
-from PyQt5.QtCore import QTimer,QDateTime,QDate,QTime,QThread,pyqtSignal
+from PyQt5.QtGui import QPixmap,QImage
+from PyQt5.QtCore import QTimer,QDateTime,QDate,QTime,QThread,pyqtSignal,QDir
 from cameravideo import camera
 import requests,json
 import base64
 from detect import detect_thread
-
+from adduserwindow import adduserwindow
 
 '''
 子类，维承UI_MainWindow与QMainWindow
@@ -21,10 +22,16 @@ mywindow:
 '''
 class mywindow(Ui_MainWindow,QMainWindow):
     detect_data_signal = pyqtSignal(bytes)
+    camera_status = False
 
     def __init__(self):         #初始化函数
         super(mywindow,self).__init__()
         self.setupUi(self)   #创建界面内容
+        self.label_11.setScaledContents(True)
+        self.label_11.setPixmap(QPixmap("./1.jpg"))
+    
+        self.plainTextEdit_2.clear()
+        
         self.datetime = QTimer(self)
         self.datetime.start(500)
         self.get_accesstoken()
@@ -35,6 +42,16 @@ class mywindow(Ui_MainWindow,QMainWindow):
         #self.on_actionopen  关联的函数
         self.actionopen.triggered.connect(self.on_actionopen)
         self.actionclose.triggered.connect(self.on_actionclose)
+
+        self.actionadd.triggered.connect(self.add_group)
+        self.actiondel.triggered.connect(self.del_group)
+        # self.actiongetlist.triggered.co
+        # nnect(self.get_list)
+        self.actionadduser.triggered.connect(self.adduser)
+
+        #添加用户组信号槽
+        # self.actionaddgroup.triggered.connect()
+           
         self.datetime.timeout.connect(self.date_time)
         # self.pushButton.clicked.connect(self.get_face)
         # self.pushButton_2.clicked.connect(self.create_thread)
@@ -45,19 +62,13 @@ class mywindow(Ui_MainWindow,QMainWindow):
         self.detectThread.start()
         # self.detect_data_signal.connect(self.detectThread.detect_face)
 
-
     def date_time(self):
-
         date = QDate.currentDate()
-        self.dateEdit.setDate(date)
         self.label_9.setText(date.toString())
 
         time = QTime.currentTime()
-        self.timeEdit.setTime(time)
         self.label_10.setText(time.toString())
         
-
-
     '''
     信号槽功能：
     当某个组件设计了信号槽功能时，当信号产生，会主动调用槽函数，去完成对应的操作
@@ -69,6 +80,7 @@ class mywindow(Ui_MainWindow,QMainWindow):
         #启动摄像头
 
         self.cameravideo = camera() 
+        self.camera_status =True
         #启动定时器，进行定时，每隔多久进行一次获取摄像头数据进行显示
         self.timeshow = QTimer(self)
         self.timeshow.start(10)
@@ -90,10 +102,28 @@ class mywindow(Ui_MainWindow,QMainWindow):
         
 
     def on_actionclose(self):
-        self.cameravideo.close_camera()
-        #关闭定时器
+        self.facedetecttime.stop()
+        self.camera_status = False
+        self.facedetecttime.timeout.disconnect(self.get_cameradata)
+        # self.detect_data_signal.disconnect(self.detectThread.get_base64)
+        # self.detectThread.transmit_data.connect(self.get_detectdata)
+        
+        #关闭检测线程
+        self.detectThread.OK = False
+        self.detectThread.quit()
+        self.detectThread.wait()
+
+
+        # #关闭定时器
         self.timeshow.stop()
-        self.label_11.setText(" ")
+        self.timeshow.timeout.disconnect(self.show_cameradata)
+        self.cameravideo.close_camera()
+        
+
+        
+        self.label_11.setPixmap(QPixmap("./1.jpg"))
+        self.plainTextEdit_2.clear()
+
 
 
     def get_cameradata(self):
@@ -101,15 +131,6 @@ class mywindow(Ui_MainWindow,QMainWindow):
         _,enc = cv2.imencode('.jpg',camera_data)
         base64_image = base64.b64encode(enc.tobytes())
         self.detect_data_signal.emit(bytes(base64_image))
-
-
-
-
-
-
-
-
-
 
 
 
@@ -162,7 +183,6 @@ class mywindow(Ui_MainWindow,QMainWindow):
             emotion = data['result']['face_list'][i]['emotion']['type']
             gender = data['result']['face_list'][i]['gender']['type']
             mask = data['result']['face_list'][i]['mask']['type']
-            print(face_shape)
 
 
             self. plainTextEdit_2.appendPlainText(str(i+1)+"学生人脸信息")
@@ -180,95 +200,87 @@ class mywindow(Ui_MainWindow,QMainWindow):
             self. plainTextEdit_2.appendPlainText("是否带口罩:"+ str(mask))
 
 
-            
-
-    # 人脸检测功能
-    def get_face(self):
-        '''
-        这是打开对话框获取,获取画面
-
-        '''
-        path,ret = QFileDialog.getOpenFileName(self,"open picture",".","图片格式(*.jpg)")
-        print(path)
-        #把图片转换为base64编码
-        fp = open(path,'rb')
-        base64_image = base64.b64encode(fp.read())
-
-
-        '''
-        摄像头获取画面
-
-
-        '''
-        # camera_data = self.cameravideo.read_camera()
-        # #转换图片,设置编码为base64
-        # _,enc = cv2.imencode('.jpg',camera_data)
-        # base64_image = base64.b64encode(enc.tobytes())
-
-
-
-        request_url = "https://aip.baidubce.com/rest/2.0/face/v3/detect"
-        #请求参数，是一个字典在字典中存储了，百度AI要识别的图片信息，要识别的属性内容
+ 
+    def add_group(self):
+        group,ret = QInputDialog.getText(self,"添加用户组","请输入用户组（由字母、数字、下划线组成）")
+        request_url = "https://aip.baidubce.com/rest/2.0/face/v3/faceset/group/add"
+        print(group)
         params = {
-            "image":base64_image,  #图片信息字符串
-            "image_type":"BASE64",  #图片信息的格式
-            "face_field":"gender,age,beauty,expression,face_shape,glasses,emotion,mask",
-            "max_face_num":10
-            }  #清求识别人脸的属性，各个属性在字符串中用，逗号隔开
-        #访问令牌
+            "group_id":group
+            }
         access_token = self.access_token
-        #把请求地址和访问令牌组成可用的网络请求
         request_url = request_url + "?access_token=" + access_token
-        #
         headers = {'content-type': 'application/json'}
-        #
+        response = requests.post(request_url, data=params, headers=headers)
+        if response:
+            print (response.json())
+
+
+    def del_group(self):
+        request_url = "https://aip.baidubce.com/rest/2.0/face/v3/faceset/group/delete"
+        #删除需要知道存在哪些组
+        list = self.get_list()
+        group,ret = QInputDialog.getText(self,"存在的用户组","用户组信息\n"+str(list['result']['group_id_list']))
+        
+        params = {
+            "group_id":group  #要删除的用户组id
+            }
+        access_token = self.access_token
+        request_url = request_url + "?access_token=" + access_token
+        headers = {'content-type': 'application/json'}
         response = requests.post(request_url, data=params, headers=headers)
         if response:
             data = response.json()
-            #data 是请求的结果数据，需要进行解析，单独拿出来需要的数据内容，分开
-            if data['error_msg']=='SUCCESS' :
-                self.plainTextEdit_2.clear()
-                #在data字典中健为'result'对应的值才是返回的检测结果
-                face_num = data['result']['face_num']
-                if face_num == 0:
-                    self.plainTextEdit_2.appendPlainText("当前没有人")
-                    return
-                else:
-                    self.plainTextEdit_2.appendPlainText("当前有人")
-
-                #人脸信息['result']['face_list'] ，是列表，每个数据就是一个人脸信息，需要取出每个列表
-                #每个人脸信息字典data['result']['face_list'][0~i]
-                for i in range(face_num):
-                    data['result']['face_list'][i]
-                    
-                age = data['result']['face_list'][i]['age']
-                beauty = data['result']['face_list'][i]['beauty']
-                expression = data['result']['face_list'][i]['expression']['type']
-                glasses = data['result']['face_list'][i]['glasses']['type']
-                face_shape = data['result']['face_list'][i]['face_shape']['type']
-                emotion = data['result']['face_list'][i]['emotion']['type']
-                gender = data['result']['face_list'][i]['gender']['type']
-                mask = data['result']['face_list'][i]['mask']['type']
-                print(face_shape)
+            if  data['error_code']== 0:
+                print("success")
 
 
-                self. plainTextEdit_2.appendPlainText(str(i+1)+"学生人脸信息")
-                self. plainTextEdit_2.appendPlainText("年龄:"+ str(age))
-                self. plainTextEdit_2.appendPlainText("颜值分数:"+ str(beauty))
-                self. plainTextEdit_2.appendPlainText("性别:"+ str(gender))
-                self. plainTextEdit_2.appendPlainText("表情:"+ str(expression))
-                self. plainTextEdit_2.appendPlainText("脸型:"+ str(face_shape))
-                self. plainTextEdit_2.appendPlainText("是否带眼镜:"+ str(glasses))
-                self. plainTextEdit_2.appendPlainText("情绪:"+ str(emotion))
-                if mask == 0:
-                    mask = "否"
-                else:
-                    mask = "是"
-                self. plainTextEdit_2.appendPlainText("是否带口罩:"+ str(mask))
-
-                        
+    def get_list(self):
+        request_url = "https://aip.baidubce.com/rest/2.0/face/v3/faceset/group/getlist"
+        params = {"start":0,"length":100}
+        access_token = self.access_token
+        request_url = request_url + "?access_token=" + access_token
+        headers = {'content-type': 'application/json'}
+        response = requests.post(request_url, data=params, headers=headers)
+        if response:
+            return response.json()
 
 
+    def getgrouplist(self):
+        list =self.get_list()
+        str = ''
+        for i in list['result']['group_id_list']:
+            str = str +'\n' + i
+        QMessageBox.about(self,"用户组列表",str)
+
+
+
+    def adduser(self):
+        request_url = "https://aip.baidubce.com/rest/2.0/face/v3/faceset/user/add"
+        
+        #创建一个窗口选择内容
+        #请求参数中需要获取人脸，转换人脸编码，，添加组id，添加用户id，新用户id的信息
+        if self.camera_status:
+            QMessageBox.about(self,"摄像头状态","请关闭签到")
+            return
+        
+        window = adduserwindow(self)
+        window.exec_()
+        print(window.base64_image)
+        params = {
+            "image":"027d8308a2ec665acb1bdf63e513bcb9",   #人脸图片
+            "image_type":"FACE_TOKEN",      #人脸的图片编码
+            "group_id":"group_repeat",      #组id
+            "user_id":"user1",      #新用户id
+            "user_info":"abc",      #用户信息
+            }
+        access_token = self.access_token
+        request_url = request_url + "?access_token=" + access_token
+        headers = {'content-type': 'application/json'}
+        response = requests.post(request_url, data=params, headers=headers)
+        if response:
+            print (response.json())
+        print("adduser")
                 
 
 #创建应用程序对象
