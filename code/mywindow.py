@@ -47,6 +47,7 @@ class mywindow(Ui_MainWindow,QMainWindow):
         self.actiondel.triggered.connect(self.del_group)
         self.actiongetlist.triggered.connect(self.getgrouplist)
         self.actionadduser.triggered.connect(self.adduser)
+        self.actiondeluser.triggered.connect(self.deluser)
 
         #添加用户组信号槽
         # self.actionaddgroup.triggered.connect()
@@ -290,7 +291,74 @@ class mywindow(Ui_MainWindow,QMainWindow):
                 print("添加成功")
             else :
                 print("添加失败")
-                
+
+
+
+    #删除用户中的一张人脸信息(face_token)
+
+    def getuserlist(self,group):
+        
+            request_url = "https://aip.baidubce.com/rest/2.0/face/v3/faceset/group/getusers"
+
+            params = {
+                "group_id":group
+            }
+            access_token = self.access_token
+            request_url = request_url + "?access_token=" + access_token
+            headers = {'content-type': 'application/json'}
+            response = requests.post(request_url, data=params, headers=headers)
+            if response:
+                return response.json()
+
+        #获取用户人脸列表
+    def user_face_list(self,group,user):
+        request_url = "https://aip.baidubce.com/rest/2.0/face/v3/faceset/face/getlist"
+
+        params = {
+            "user_id": user,
+            "group_id": group
+        }
+        access_token = self.access_token
+        request_url = request_url + "?access_token=" + access_token
+        headers = {'content-type': 'application/json'}
+        response = requests.post(request_url, data=params, headers=headers)
+        if response:
+            return response.json()
+
+    #删除用户中的一张人脸信息
+    def del_face_token(self,group,user,facetoken):
+        request_url = "https://aip.baidubce.com/rest/2.0/face/v3/faceset/face/delete"
+
+        params = {
+            "user_id":user,
+            "group_id":group,
+            "face_token":facetoken
+
+        }
+        access_token = self.access_token
+        request_url = request_url + "?access_token=" + access_token
+        headers = {'content-type': 'application/json'}
+        response = requests.post(request_url, data=params, headers=headers)
+        if response:
+            print(response.json())
+
+
+    def deluser(self):
+        #查询用户人脸信息（face_token）
+        #获取用户组进行选择
+        list = self.get_list()
+        #print(list)
+        group,ret=QInputDialog.getText(self,"用户组获取","用户组信息\n"+str(list['result']['group_id_list']))
+        #获取用户，选择
+        userlist=self.getuserlist(group)
+        print(userlist)
+        user, ret = QInputDialog.getText(self, "用户获取", "用户信息\n" + str(userlist['result']['user_id_list']))
+        #print(user)
+        #获取用户的人脸列表
+        face_list=self.user_face_list(group,user)
+        for i in face_list['result']['face_list']:
+            self.del_face_token(group,user,i['face_token'])
+
 
 #创建应用程序对象
 app = QApplication(sys.argv)

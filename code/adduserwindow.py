@@ -39,7 +39,7 @@ class adduserwindow(Ui_Dialog,QDialog):
         camera_data = self.cameravideo.read_camera()
         _,enc = cv2.imencode('.jpg',camera_data)
         self.base64_image = base64.b64encode(enc.tobytes())
-        print(self.base64_image)
+        # print(self.base64_image)
         self.time.stop()
         self.cameravideo.close_camera()
         

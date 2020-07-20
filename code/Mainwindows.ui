@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>1090</width>
-    <height>571</height>
+    <height>576</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -114,7 +114,7 @@
          </widget>
         </item>
         <item>
-         <widget class="QTextBrowser" name="textBrowser"/>
+         <widget class="QPlainTextEdit" name="plainTextEdit"/>
         </item>
         <item>
          <widget class="QLabel" name="label_4">
@@ -124,7 +124,11 @@
          </widget>
         </item>
         <item>
-         <widget class="QPlainTextEdit" name="plainTextEdit_2"/>
+         <widget class="QPlainTextEdit" name="plainTextEdit_2">
+          <property name="readOnly">
+           <bool>false</bool>
+          </property>
+         </widget>
         </item>
        </layout>
       </item>
@@ -156,6 +160,7 @@
     <addaction name="actiondel"/>
     <addaction name="actionadduser"/>
     <addaction name="actiongetlist"/>
+    <addaction name="actiondeluser"/>
    </widget>
    <addaction name="menu"/>
    <addaction name="menu_2"/>
@@ -199,17 +204,22 @@
   </action>
   <action name="actiondel">
    <property name="text">
-    <string>delgroup</string>
+    <string>删除组</string>
    </property>
   </action>
   <action name="actionadduser">
    <property name="text">
-    <string>adduser</string>
+    <string>添加用户</string>
    </property>
   </action>
   <action name="actiongetlist">
    <property name="text">
-    <string>asd</string>
+    <string>显示组</string>
+   </property>
+  </action>
+  <action name="actiondeluser">
+   <property name="text">
+    <string>删除用户</string>
    </property>
   </action>
  </widget>
