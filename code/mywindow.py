@@ -288,9 +288,9 @@ class mywindow(Ui_MainWindow,QMainWindow):
         if response:
             data = response.json()
             if data['error_code']==0:
-                print("添加成功")
+                QMessageBox.information(self,"添加成功","信息已添加",QMessageBox.Yes)
             else :
-                print("添加失败")
+                QMessageBox.information(self,"添加失败","信息未添加",QMessageBox.Yes)
 
 
 

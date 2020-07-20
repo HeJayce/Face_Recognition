@@ -52,4 +52,4 @@ class adduserwindow(Ui_Dialog,QDialog):
         self.accept()
 
     def close_window(self):
-        pass
+        self.close()
