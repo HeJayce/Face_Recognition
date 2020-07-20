@@ -6,16 +6,28 @@ import cv2
 import base64
 
 class adduserwindow(Ui_Dialog,QDialog):
-    def __init__(self, parent=None):
+
+    def __init__(self,list,parent=None):
         super(adduserwindow,self).__init__(parent)
         self.setupUi(self)
         self.label.setScaledContents(True)
         self.cameravideo = camera()
-        
+        self.show_list(list)
         self.time = QTimer()
         self.time.timeout.connect(self.show_cameradata)
         self.time.start(50)
         self.pushButton.clicked.connect(self.get_cameradata)
+        self.pushButton_2.clicked.connect(self.get_data_close)
+        self.pushButton_3.clicked.connect(self.close_window)
+
+        print(list)
+
+    def show_list(self,list):
+        for l in list :
+            self.listWidget.addItem(l)
+
+
+
 
     def show_cameradata(self):
         # print("ok")
@@ -31,3 +43,13 @@ class adduserwindow(Ui_Dialog,QDialog):
         self.time.stop()
         self.cameravideo.close_camera()
         
+    def get_data_close(self):
+        self.group_id = self.listWidget.currentItem().text()
+        self.user_id = self.lineEdit.text()
+        self.msg_name = self.lineEdit_2.text()
+        self.msg_class = self.lineEdit_3.text()
+        #关闭对话框
+        self.accept()
+
+    def close_window(self):
+        pass

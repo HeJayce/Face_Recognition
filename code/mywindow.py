@@ -45,8 +45,7 @@ class mywindow(Ui_MainWindow,QMainWindow):
 
         self.actionadd.triggered.connect(self.add_group)
         self.actiondel.triggered.connect(self.del_group)
-        # self.actiongetlist.triggered.co
-        # nnect(self.get_list)
+        self.actiongetlist.triggered.connect(self.getgrouplist)
         self.actionadduser.triggered.connect(self.adduser)
 
         #添加用户组信号槽
@@ -263,24 +262,34 @@ class mywindow(Ui_MainWindow,QMainWindow):
         if self.camera_status:
             QMessageBox.about(self,"摄像头状态","请关闭签到")
             return
-        
-        window = adduserwindow(self)
-        window.exec_()
-        print(window.base64_image)
+        list = self.get_list()
+        window = adduserwindow(list['result']['group_id_list'],self)
+        # window = adduserwindow(self)
+        #新创建的窗口，通过exec（）函数一直执行，阻塞执行，窗口不进行关闭，exec函数不会退出（才会结束）
+        window_status = window.exec_()
+        print(window_status)
+        if window_status !=1:
+            return 
+
+        #判断是否点击确定
+
         params = {
-            "image":"027d8308a2ec665acb1bdf63e513bcb9",   #人脸图片
-            "image_type":"FACE_TOKEN",      #人脸的图片编码
-            "group_id":"group_repeat",      #组id
-            "user_id":"user1",      #新用户id
-            "user_info":"abc",      #用户信息
+            "image":window.base64_image,   #人脸图片
+            "image_type":"BASE64",      #人脸的图片编码
+            "group_id":window.group_id,      #组id
+            "user_id":window.user_id,      #新用户id
+            "user_info":"姓名" + window.msg_name +'\n'+"班级"+window.msg_class,      #用户信息
             }
         access_token = self.access_token
         request_url = request_url + "?access_token=" + access_token
         headers = {'content-type': 'application/json'}
         response = requests.post(request_url, data=params, headers=headers)
         if response:
-            print (response.json())
-        print("adduser")
+            data = response.json()
+            if data['error_code']==0:
+                print("添加成功")
+            else :
+                print("添加失败")
                 
 
 #创建应用程序对象

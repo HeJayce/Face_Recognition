@@ -14,7 +14,7 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 class Ui_Dialog(object):
     def setupUi(self, Dialog):
         Dialog.setObjectName("Dialog")
-        Dialog.resize(401, 329)
+        Dialog.resize(385, 390)
         self.label = QtWidgets.QLabel(Dialog)
         self.label.setGeometry(QtCore.QRect(13, 13, 151, 171))
         self.label.setObjectName("label")
@@ -46,6 +46,12 @@ class Ui_Dialog(object):
         self.lineEdit_3 = QtWidgets.QLineEdit(Dialog)
         self.lineEdit_3.setGeometry(QtCore.QRect(224, 273, 133, 20))
         self.lineEdit_3.setObjectName("lineEdit_3")
+        self.pushButton_2 = QtWidgets.QPushButton(Dialog)
+        self.pushButton_2.setGeometry(QtCore.QRect(70, 330, 75, 23))
+        self.pushButton_2.setObjectName("pushButton_2")
+        self.pushButton_3 = QtWidgets.QPushButton(Dialog)
+        self.pushButton_3.setGeometry(QtCore.QRect(240, 330, 75, 23))
+        self.pushButton_3.setObjectName("pushButton_3")
 
         self.retranslateUi(Dialog)
         QtCore.QMetaObject.connectSlotsByName(Dialog)
@@ -59,3 +65,5 @@ class Ui_Dialog(object):
         self.label_2.setText(_translate("Dialog", "输入用户id（字母数字下划线）"))
         self.label_3.setText(_translate("Dialog", "姓名："))
         self.label_4.setText(_translate("Dialog", "班级"))
+        self.pushButton_2.setText(_translate("Dialog", "确定"))
+        self.pushButton_3.setText(_translate("Dialog", "取消"))
