@@ -161,8 +161,11 @@ class mywindow(Ui_MainWindow,QMainWindow):
 
 
     def get_detectdata(self,data):
+        if data['error_code'] != 0 :
+            self.plainTextEdit_2.setPlainText(data['error_msg'])
+            return
 
-        if data['error_msg']=='SUCCESS' :
+        elif data['error_msg']=='SUCCESS' :
             self.plainTextEdit_2.clear()
             #在data字典中健为'result'对应的值才是返回的检测结果
             face_num = data['result']['face_num']

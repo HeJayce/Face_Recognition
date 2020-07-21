@@ -73,7 +73,12 @@ class detect_thread(QThread):
         if response:
             data = response.json()
             #data 是请求的结果数据，需要进行解析，单独拿出来需要的数据内容，分开
-            if data['result']['face_num'] >  0:
+            if data['error_code'] !=0:
+                self.transmit_data.emit(data)
+                self.seach_data.emit(data['error_msg'])
+                return
+
+            elif data['result']['face_num'] >  0:
                 
                 self.transmit_data.emit(dict(data))
                 self.face_search()
