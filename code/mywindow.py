@@ -99,6 +99,8 @@ class mywindow(Ui_MainWindow,QMainWindow):
 
         self.detect_data_signal.connect(self.detectThread.get_base64)
         self.detectThread.transmit_data.connect(self.get_detectdata)
+        self.detectThread.seach_data.connect(self.get_search_data)
+
         
 
     def on_actionclose(self):
@@ -198,6 +200,15 @@ class mywindow(Ui_MainWindow,QMainWindow):
             else:
                 mask = "是"
             self. plainTextEdit_2.appendPlainText("是否带口罩:"+ str(mask))
+
+
+    def get_search_data(self,data):
+
+        self.plainTextEdit.setPlainText(data)
+
+
+
+
 
 
  

@@ -8,8 +8,9 @@ import requests
 #需要自己完成需要的线程类，创建一个新的线程类（功能就可以自己定义），继承QThread，新写的类就是线程类
 
 #线程进行执行只会执行线程类中的run函数，如果有新的函数需要实现，重新写一个run函数完成
-class detect_thread(QThread):
+class detect_thread(QThread): 
     transmit_data = pyqtSignal(dict)
+    seach_data = pyqtSignal(str)
     OK = True
     def __init__(self,token):
         super(detect_thread,self).__init__()
@@ -72,12 +73,16 @@ class detect_thread(QThread):
         if response:
             data = response.json()
             #data 是请求的结果数据，需要进行解析，单独拿出来需要的数据内容，分开
-            if data['result']['face_num']>0:
-                self.face_serach()
-            self.transmit_data.emit(dict(data))
+            if data['result']['face_num'] >  0:
+                
+                self.transmit_data.emit(dict(data))
+                self.face_search()
+            else:
+                self.transmit_data.emit(dict(data))
+                self.seach_data.emit("")
             
     #人脸识别检测，一人
-    def face_serach(self):
+    def face_search(self):
         request_url = "https://aip.baidubce.com/rest/2.0/face/v3/search"
         params = {
             "image":self.base64_image,
@@ -89,9 +94,8 @@ class detect_thread(QThread):
         headers = {'content-type': 'application/json'}
         response = requests.post(request_url, data=params, headers=headers)
         if response:
-            # data = response.json()        
-            # if data['error_code'] == 0 :
-            #     if data['result']['user_list'][0]['user_info'] > 90 :   
-            #         print()  
-            #         print(data['result']['user_list'][0]['user_info'])
-            print(response.json())
+            data = response.json()        
+            if data['error_code'] == 0 :
+                if data['result']['user_list'][0]['score'] > 90:
+                    #print("人脸识别成功（签到成功）")
+                    self.seach_data.emit("学生签到成功\n学生信息是:\n"+data['result']['user_list'][0]['user_info'])
