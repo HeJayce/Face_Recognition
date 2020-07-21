@@ -72,5 +72,26 @@ class detect_thread(QThread):
         if response:
             data = response.json()
             #data 是请求的结果数据，需要进行解析，单独拿出来需要的数据内容，分开
+            if data['result']['face_num']>0:
+                self.face_serach()
             self.transmit_data.emit(dict(data))
             
+    #人脸识别检测，一人
+    def face_serach(self):
+        request_url = "https://aip.baidubce.com/rest/2.0/face/v3/search"
+        params = {
+            "image":self.base64_image,
+            "image_type":"BASE64",
+            "group_id_list":"class1"                    #从那些组中进行人脸识别
+        } 
+        access_token = self.access_token
+        request_url = request_url + "?access_token=" + access_token
+        headers = {'content-type': 'application/json'}
+        response = requests.post(request_url, data=params, headers=headers)
+        if response:
+            # data = response.json()        
+            # if data['error_code'] == 0 :
+            #     if data['result']['user_list'][0]['user_info'] > 90 :   
+            #         print()  
+            #         print(data['result']['user_list'][0]['user_info'])
+            print(response.json())

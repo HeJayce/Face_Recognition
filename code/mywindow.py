@@ -309,6 +309,7 @@ class mywindow(Ui_MainWindow,QMainWindow):
             response = requests.post(request_url, data=params, headers=headers)
             if response:
                 return response.json()
+                
 
         #获取用户人脸列表
     def user_face_list(self,group,user):
@@ -324,6 +325,12 @@ class mywindow(Ui_MainWindow,QMainWindow):
         response = requests.post(request_url, data=params, headers=headers)
         if response:
             return response.json()
+            #显示到界面中，要改为字符串
+            # data = response.json
+            # printstr((data['result']['face_list']))
+           
+
+            
 
     #删除用户中的一张人脸信息
     def del_face_token(self,group,user,facetoken):
@@ -358,7 +365,7 @@ class mywindow(Ui_MainWindow,QMainWindow):
         face_list=self.user_face_list(group,user)
         for i in face_list['result']['face_list']:
             self.del_face_token(group,user,i['face_token'])
-
+ 
 
 #创建应用程序对象
 app = QApplication(sys.argv)
