@@ -170,10 +170,10 @@ class mywindow(Ui_MainWindow,QMainWindow):
             #在data字典中健为'result'对应的值才是返回的检测结果
             face_num = data['result']['face_num']
             if face_num == 0:
-                self.plainTextEdit_2.appendPlainText("当前没有人")
+                self.plainTextEdit_2.appendPlainText("当前没有人\n")
                 return
             else:
-                self.plainTextEdit_2.appendPlainText("当前有人")
+                self.plainTextEdit_2.appendPlainText("当前有人\n")
 
             #人脸信息['result']['face_list'] ，是列表，每个数据就是一个人脸信息，需要取出每个列表
             #每个人脸信息字典data['result']['face_list'][0~i]
@@ -190,7 +190,7 @@ class mywindow(Ui_MainWindow,QMainWindow):
             mask = data['result']['face_list'][i]['mask']['type']
 
 
-            self. plainTextEdit_2.appendPlainText(str(i+1)+"学生人脸信息")
+            self. plainTextEdit_2.appendPlainText("学生人脸信息")
             self. plainTextEdit_2.appendPlainText("年龄:"+ str(age))
             self. plainTextEdit_2.appendPlainText("颜值分数:"+ str(beauty))
             self. plainTextEdit_2.appendPlainText("性别:"+ str(gender))
