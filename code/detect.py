@@ -12,9 +12,10 @@ class detect_thread(QThread):
     transmit_data = pyqtSignal(dict)
     seach_data = pyqtSignal(str)
     OK = True
-    def __init__(self,token,sign_list):
+    def __init__(self,token,sign_list,group):
         super(detect_thread,self).__init__()
         self.access_token = token
+        self.group = group
         self.condition = False
         self.sign_list = sign_list
 
@@ -93,7 +94,7 @@ class detect_thread(QThread):
         params = {
             "image":self.base64_image,
             "image_type":"BASE64",
-            "group_id_list":"class1"                    #从那些组中进行人脸识别
+            "group_id_list":self.group                  #从那些组中进行人脸识别
         } 
         access_token = self.access_token
         request_url = request_url + "?access_token=" + access_token
@@ -111,5 +112,9 @@ class detect_thread(QThread):
                     key = data['result']['user_list'][0]['group_id'] + data['result']['user_list'][0]['user_id']
                     if  key not in self.sign_list.keys():
                         self.sign_list[key] = data['result']['user_list'][0]
-
                     self.seach_data.emit("学生签到成功\n学生信息是:\n"+data['result']['user_list'][0]['user_info'])
+            
+            else :
+                self.seach_data.emit("认证失败")
+
+        

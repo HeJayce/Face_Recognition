@@ -60,8 +60,8 @@ class mywindow(Ui_MainWindow,QMainWindow):
         # self.pushButton_2.clicked.connect(self.create_thread)
 
     #线程完成检测
-    def create_thread(self):
-        self.detectThread = detect_thread(self.access_token,self.sign_list)
+    def create_thread(self,group):
+        self.detectThread = detect_thread(self.access_token,self.sign_list,group)
         self.detectThread.start()
         # self.detect_data_signal.connect(self.detectThread.detect_face)
 
@@ -80,6 +80,10 @@ class mywindow(Ui_MainWindow,QMainWindow):
 
     def on_actionopen(self):
         #print("on_actionopen")
+
+        list = self.get_list()
+        group,ret = QInputDialog.getText(self,"存在的用户组","用户组信息\n"+str(list['result']['group_id_list']))
+
         #启动摄像头
 
         self.cameravideo = camera() 
@@ -92,7 +96,7 @@ class mywindow(Ui_MainWindow,QMainWindow):
         #50ms  定时器启动，每50ms就会产生一个信号timeout
         self.timeshow.timeout.connect(self.show_cameradata)
 
-        self.create_thread()
+        self.create_thread(group)
         
         #当开启检测启动时，创建定时器，500ms， 用作检测
         self.facedetecttime = QTimer(self)

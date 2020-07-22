@@ -14,6 +14,10 @@ class sign_data(Ui_Dialog,QDialog):
             self.tableWidget.setItem(rowcount,0,QTableWidgetItem(info[0]))
             self.tableWidget.setItem(rowcount,1, QTableWidgetItem(info[1]))
             self.tableWidget.setItem(rowcount,2, QTableWidgetItem(i['datetime']))
-        #     info[0]
-        #     info[1]
-        #     i['datetime']
+        # self.pushButton.clicked.connect(self.save_data)
+        # self.pushButton_2.clicked.connect()
+
+    def save_data(self):
+        filename,ret = QFileDialog.getSaveFileName(self,"导出数据",".","TXT(*.txt)")
+        print(filename)
+        self.accept()   #关闭对话框
