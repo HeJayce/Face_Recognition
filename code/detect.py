@@ -107,7 +107,7 @@ class detect_thread(QThread):
                     #存储要保存的签到数据，方便进行显示
                     del[data['result']['user_list'][0]['score']]
                     datetime = QDateTime.currentDateTime()
-                    datetime = datetime.toString()
+                    datetime = datetime.toString("yyyy.MM.dd hh:mm:ss")
                     data['result']['user_list'][0]['datetime'] = datetime 
                     key = data['result']['user_list'][0]['group_id'] + data['result']['user_list'][0]['user_id']
                     if  key not in self.sign_list.keys():
