@@ -1,4 +1,4 @@
-from PyQt5.QtCore import QThread,QTimer,pyqtSignal,QDir
+from PyQt5.QtCore import QThread,QTimer,pyqtSignal,QDir,QDateTime
 import PyQt5.QtCore
 import cv2 
 import base64
@@ -12,10 +12,11 @@ class detect_thread(QThread):
     transmit_data = pyqtSignal(dict)
     seach_data = pyqtSignal(str)
     OK = True
-    def __init__(self,token):
+    def __init__(self,token,sign_list):
         super(detect_thread,self).__init__()
         self.access_token = token
         self.condition = False
+        self.sign_list = sign_list
 
 
 
@@ -102,5 +103,13 @@ class detect_thread(QThread):
             data = response.json()        
             if data['error_code'] == 0 :
                 if data['result']['user_list'][0]['score'] > 90:
-                    #print("人脸识别成功（签到成功）")
+                    #存储要保存的签到数据，方便进行显示
+                    del[data['result']['user_list'][0]['score']]
+                    datetime = QDateTime.currentDateTime()
+                    datetime = datetime.toString()
+                    data['result']['user_list'][0]['datetime'] = datetime 
+                    key = data['result']['user_list'][0]['group_id'] + data['result']['user_list'][0]['user_id']
+                    if  key not in self.sign_list.keys():
+                        self.sign_list[key] = data['result']['user_list'][0]
+
                     self.seach_data.emit("学生签到成功\n学生信息是:\n"+data['result']['user_list'][0]['user_info'])

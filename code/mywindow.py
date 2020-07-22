@@ -10,6 +10,7 @@ import requests,json
 import base64
 from detect import detect_thread
 from adduserwindow import adduserwindow
+from data_show import sign_data
 
 '''
 子类，维承UI_MainWindow与QMainWindow
@@ -23,6 +24,8 @@ mywindow:
 class mywindow(Ui_MainWindow,QMainWindow):
     detect_data_signal = pyqtSignal(bytes)
     camera_status = False
+    #存放签到数据
+    sign_list = {}
 
     def __init__(self):         #初始化函数
         super(mywindow,self).__init__()
@@ -58,7 +61,7 @@ class mywindow(Ui_MainWindow,QMainWindow):
 
     #线程完成检测
     def create_thread(self):
-        self.detectThread = detect_thread(self.access_token)
+        self.detectThread = detect_thread(self.access_token,self.sign_list)
         self.detectThread.start()
         # self.detect_data_signal.connect(self.detectThread.detect_face)
 
@@ -101,30 +104,39 @@ class mywindow(Ui_MainWindow,QMainWindow):
         self.detectThread.transmit_data.connect(self.get_detectdata)
         self.detectThread.seach_data.connect(self.get_search_data)
 
-        
-
     def on_actionclose(self):
         self.facedetecttime.stop()
         self.camera_status = False
         self.facedetecttime.timeout.disconnect(self.get_cameradata)
-        # self.detect_data_signal.disconnect(self.detectThread.get_base64)
-        # self.detectThread.transmit_data.connect(self.get_detectdata)
+        self.detect_data_signal.disconnect(self.detectThread.get_base64)
+        self.detectThread.transmit_data.connect(self.get_detectdata)
         
         #关闭检测线程
         self.detectThread.OK = False
+
         self.detectThread.quit()
         self.detectThread.wait()
-
 
         # #关闭定时器
         self.timeshow.stop()
         self.timeshow.timeout.disconnect(self.show_cameradata)
         self.cameravideo.close_camera()
         
-
+             
         
+   
+        #显示本次签到情况
         self.label_11.setPixmap(QPixmap("./1.jpg"))
-        self.plainTextEdit_2.clear()
+        self.detectThread.sign_list
+        self.signdata = sign_data(self.detectThread.sign_list,self)
+        self.signdata.exec_()
+
+        if self.timeshow.isActive() == False and self.facedetecttime.isActive() == False:
+            self.label_11.setPixmap(QPixmap("./1.jpg"))
+            self.plainTextEdit.clear()
+            self.plainTextEdit_2.clear()
+        else:
+            print("关闭失败，存在部分关闭失败")
 
 
 
@@ -133,8 +145,6 @@ class mywindow(Ui_MainWindow,QMainWindow):
         _,enc = cv2.imencode('.jpg',camera_data)
         base64_image = base64.b64encode(enc.tobytes())
         self.detect_data_signal.emit(bytes(base64_image))
-
-
 
 #是作为摄像头，获取数据，显示画面的功能
 #只要能够不断重复调用这个两数，不断的从摄像头获收数据进行显示
@@ -147,7 +157,6 @@ class mywindow(Ui_MainWindow,QMainWindow):
         #显示数据，显示画面
         self.label_11.setPixmap(pic)
 
-
     #获取网络请求的令牌
     def get_accesstoken(self):
         host = 'https://aip.baidubce.com/oauth/2.0/token?grant_type=client_credentials&client_id=gI2zuccf2cAuquXyOf8lWw3i&client_secret=zTBa0v0VUE7VpxfBLzbWXRyal9rI00yy'
@@ -158,7 +167,6 @@ class mywindow(Ui_MainWindow,QMainWindow):
         if response:
             data = response.json()
             self.access_token = data.get('access_token')
-
 
     def get_detectdata(self,data):
         if data['error_code'] != 0 :
@@ -204,16 +212,9 @@ class mywindow(Ui_MainWindow,QMainWindow):
                 mask = "是"
             self. plainTextEdit_2.appendPlainText("是否带口罩:"+ str(mask))
 
-
     def get_search_data(self,data):
 
         self.plainTextEdit.setPlainText(data)
-
-
-
-
-
-
  
     def add_group(self):
         group,ret = QInputDialog.getText(self,"添加用户组","请输入用户组（由字母、数字、下划线组成）")
@@ -228,7 +229,6 @@ class mywindow(Ui_MainWindow,QMainWindow):
         response = requests.post(request_url, data=params, headers=headers)
         if response:
             print (response.json())
-
 
     def del_group(self):
         request_url = "https://aip.baidubce.com/rest/2.0/face/v3/faceset/group/delete"
@@ -248,7 +248,6 @@ class mywindow(Ui_MainWindow,QMainWindow):
             if  data['error_code']== 0:
                 print("success")
 
-
     def get_list(self):
         request_url = "https://aip.baidubce.com/rest/2.0/face/v3/faceset/group/getlist"
         params = {"start":0,"length":100}
@@ -259,15 +258,12 @@ class mywindow(Ui_MainWindow,QMainWindow):
         if response:
             return response.json()
 
-
     def getgrouplist(self):
         list =self.get_list()
         str = ''
         for i in list['result']['group_id_list']:
             str = str +'\n' + i
         QMessageBox.about(self,"用户组列表",str)
-
-
 
     def adduser(self):
         request_url = "https://aip.baidubce.com/rest/2.0/face/v3/faceset/user/add"
