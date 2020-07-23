@@ -96,6 +96,8 @@ class Ui_MainWindow(object):
         self.actiongetlist.setObjectName("actiongetlist")
         self.actiondeluser = QtWidgets.QAction(MainWindow)
         self.actiondeluser.setObjectName("actiondeluser")
+        self.actiontestdel = QtWidgets.QAction(MainWindow)
+        self.actiontestdel.setObjectName("actiontestdel")
         self.menu.addAction(self.actionopen)
         self.menu.addAction(self.actionclose)
         self.menu_2.addAction(self.actionadd)
@@ -103,6 +105,7 @@ class Ui_MainWindow(object):
         self.menu_2.addAction(self.actionadduser)
         self.menu_2.addAction(self.actiongetlist)
         self.menu_2.addAction(self.actiondeluser)
+        self.menu_2.addAction(self.actiontestdel)
         self.menubar.addAction(self.menu.menuAction())
         self.menubar.addAction(self.menu_2.menuAction())
 
@@ -128,3 +131,4 @@ class Ui_MainWindow(object):
         self.actionadduser.setText(_translate("MainWindow", "添加用户"))
         self.actiongetlist.setText(_translate("MainWindow", "显示组"))
         self.actiondeluser.setText(_translate("MainWindow", "删除用户"))
+        self.actiontestdel.setText(_translate("MainWindow", "testdel"))

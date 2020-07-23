@@ -5,6 +5,7 @@ from PyQt5.QtCore import QTimer
 import cv2
 import base64
 
+
 class adduserwindow(Ui_Dialog,QDialog):
 
     def __init__(self,list,parent=None):

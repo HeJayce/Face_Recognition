@@ -11,6 +11,8 @@ import base64
 from detect import detect_thread
 from adduserwindow import adduserwindow
 from data_show import sign_data
+from deluserwindow import deluserwindow
+from userwindow import userwindow
 
 '''
 子类，维承UI_MainWindow与QMainWindow
@@ -51,6 +53,7 @@ class mywindow(Ui_MainWindow,QMainWindow):
         self.actiongetlist.triggered.connect(self.getgrouplist)
         self.actionadduser.triggered.connect(self.adduser)
         self.actiondeluser.triggered.connect(self.deluser)
+        self.actiontestdel.triggered.connect(self.deluserui)
 
         #添加用户组信号槽
         # self.actionaddgroup.triggered.connect()
@@ -340,9 +343,6 @@ class mywindow(Ui_MainWindow,QMainWindow):
             #显示到界面中，要改为字符串
             # data = response.json
             # printstr((data['result']['face_list']))
-           
-
-            
 
     #删除用户中的一张人脸信息
     def del_face_token(self,group,user,facetoken):
@@ -373,11 +373,52 @@ class mywindow(Ui_MainWindow,QMainWindow):
         print(userlist)
         user, ret = QInputDialog.getText(self, "用户获取", "用户信息\n" + str(userlist['result']['user_id_list']))
         #print(user)
+
         #获取用户的人脸列表
         face_list=self.user_face_list(group,user)
         for i in face_list['result']['face_list']:
             self.del_face_token(group,user,i['face_token'])
- 
+
+
+    def deluserui(self):
+        list = self.get_list()
+        print(list)
+        # user_list = self.getuserlist(group)
+        # #print(list)
+        # group,ret=QInputDialog.getText(self,"用户组获取","用户组信息\n"+str(list['result']['group_id_list']))
+        # #获取用户，选择
+        # userlist=self.getuserlist(group)
+        # print(userlist)
+        # user, ret = QInputDialog.getText(self, "用户获取", "用户信息\n" + str(userlist['result']['user_id_list']))
+        # #print(user)
+        window = deluserwindow(list['result']['group_id_list'],self)      
+        window_status = window.exec_()
+        group = window.group
+        userlist = self.getuserlist(group)
+        print(userlist)
+        window2 = userwindow(userlist['result']['user_id_list'],self)      
+        window_status2 = window2.exec_()
+        user = window2.user
+
+        face_list=self.user_face_list(group,user)
+        for i in face_list['result']['face_list']:
+            self.del_face_token(group,user,i['face_token'])  
+
+        QMessageBox.information(self,"删除成功","删除成功",QMessageBox.Yes)
+
+
+        
+
+
+
+
+
+
+
+
+
+
+
 
 #创建应用程序对象
 app = QApplication(sys.argv)

@@ -161,6 +161,7 @@
     <addaction name="actionadduser"/>
     <addaction name="actiongetlist"/>
     <addaction name="actiondeluser"/>
+    <addaction name="actiontestdel"/>
    </widget>
    <addaction name="menu"/>
    <addaction name="menu_2"/>
@@ -220,6 +221,11 @@
   <action name="actiondeluser">
    <property name="text">
     <string>删除用户</string>
+   </property>
+  </action>
+  <action name="actiontestdel">
+   <property name="text">
+    <string>testdel</string>
    </property>
   </action>
  </widget>
