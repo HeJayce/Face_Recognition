@@ -308,7 +308,6 @@ class mywindow(Ui_MainWindow,QMainWindow):
                 QMessageBox.information(self,"添加成功","信息已添加",QMessageBox.Yes)
             else :
                 QMessageBox.information(self,"添加失败","信息未添加",QMessageBox.Yes)
-
     #删除用户中的一张人脸信息(face_token)
 
     def getuserlist(self,group):

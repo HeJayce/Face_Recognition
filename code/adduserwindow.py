@@ -4,6 +4,18 @@ from cameravideo import camera
 from PyQt5.QtCore import QTimer
 import cv2
 import base64
+import pymysql
+import pandas as pd
+
+from sqlalchemy import create_engine
+
+# db = pymysql.connect(host='rm-bp1kkk2w6swi10b45ho.mysql.rds.aliyuncs.com', user='nbjbcy', password='NBchengyun12!@', port=3306) 
+# cursor = db.cursor()
+# data = cursor.execute("SELECT * FROM practice2.classes")
+# data = list(cursor.fetchall())# 获取单条数据
+# print(data)
+# db.close()# 关闭数据库连接
+
 
 
 class adduserwindow(Ui_Dialog,QDialog):
@@ -43,14 +55,26 @@ class adduserwindow(Ui_Dialog,QDialog):
         # print(self.base64_image)
         self.time.stop()
         self.cameravideo.close_camera()
+
         
     def get_data_close(self):
         self.group_id = self.listWidget.currentItem().text()
         self.user_id = self.lineEdit.text()
         self.msg_name = self.lineEdit_2.text()
         self.msg_class = self.lineEdit_3.text()
+        print(type(self.msg_class))
         #关闭对话框
         self.accept()
+        def sql_connect(host="rm-bp1kkk2w6swi10b45ho.mysql.rds.aliyuncs.com",port=3306,user='nbjbcy',passwd='',db='humaninfo',charset='utf8'):
+            connect = pymysql.connect(host=host, port=port, user=user, passwd=passwd, db=db, charset=charset)
+            cur = connect.cursor()
+            return connect,cur
+        connect,cur = sql_connect()
+        # df1 = "insert into info values (group_id, user_id, msg_name, msg_class)"
+        cur.execute("INSERT INTO info(group_id, user_id, msg_name, msg_class) VALUES ('%s','%s','%s','%s');" %(self.group_id, self.user_id, self.msg_name, self.msg_class))
+        conn.commit()
+
+
 
     def close_window(self):
         self.close()
